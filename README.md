@@ -1,8 +1,10 @@
-# GladNet2
+# GladNet.ASP.Clien
 
-Message based networking API library for for Unity3D/.Net developers. Defines an API from which other lowerlevel network libraries can be adapted to.
+GladNet2 is a message based networking API library for for Unity3D/.Net developers. Defines an API from which other lowerlevel network libraries can be adapted to.
 
 Come chat: [![https://gitter.im/HelloKitty/GladNet2.0y](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/HelloKitty/GladNet2.0?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
+
+GladNet.ASP.Client is GladNet2 client API implemented for ASP-backed servers over HTTP.
 
 ## Implementations
 
@@ -25,8 +27,8 @@ Available on a Nuget Feed: https://www.myget.org/F/hellokitty/api/v2 [![hellokit
 #### Linux/Mono - Unit Tests
 ||Debug x86|Debug x64|Release x86|Release x64|
 |:--:|:--:|:--:|:--:|:--:|:--:|
-|**master**| N/A | N/A | N/A | [![Build Status](https://travis-ci.org/HelloKitty/GladNet2.0.svg?branch=master)](https://travis-ci.org/HelloKitty/GladNet2.0) |
-|**dev**| N/A | N/A | N/A | [![Build Status](https://travis-ci.org/HelloKitty/GladNet2.0.svg?branch=dev)](https://travis-ci.org/HelloKitty/GladNet2.0)|
+|**master**| N/A | N/A | N/A | [![Build Status](https://travis-ci.org/HelloKitty/GladNet.ASP.Client.svg?branch=master)](https://travis-ci.org/HelloKitty/GladNet.ASP.Client) |
+|**dev**| N/A | N/A | N/A | [![Build Status](https://travis-ci.org/HelloKitty/GladNet.ASP.Client.svg?branch=dev)](https://travis-ci.org/HelloKitty/GladNet.ASP.Client)|
 
 #### Windows - Unit Tests
 
