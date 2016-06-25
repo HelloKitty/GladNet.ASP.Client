@@ -1,4 +1,4 @@
-# GladNet.ASP.Clien
+# GladNet.ASP.Client
 
 GladNet2 is a message based networking API library for for Unity3D/.Net developers. Defines an API from which other lowerlevel network libraries can be adapted to.
 
