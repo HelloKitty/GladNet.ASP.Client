@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{30D02440
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GladNet.ASP.Client.Lib", "src\GladNet.ASP.Client.Lib\GladNet.ASP.Client.Lib.csproj", "{BF264F81-963E-498F-9C06-E480E28EB271}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GladNet.ASP.Client.Test.Manual", "tests\GladNet.ASP.Client.Test.Manual\GladNet.ASP.Client.Test.Manual.csproj", "{DE64278D-A355-4F2D-B05B-1C10EB6476F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,11 +21,16 @@ Global
 		{BF264F81-963E-498F-9C06-E480E28EB271}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF264F81-963E-498F-9C06-E480E28EB271}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF264F81-963E-498F-9C06-E480E28EB271}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE64278D-A355-4F2D-B05B-1C10EB6476F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE64278D-A355-4F2D-B05B-1C10EB6476F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE64278D-A355-4F2D-B05B-1C10EB6476F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE64278D-A355-4F2D-B05B-1C10EB6476F3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BF264F81-963E-498F-9C06-E480E28EB271} = {DF79B12F-748F-42D2-8A62-6998983D1CBF}
+		{DE64278D-A355-4F2D-B05B-1C10EB6476F3} = {30D02440-0031-4723-BB42-ECE61813DDD4}
 	EndGlobalSection
 EndGlobal
