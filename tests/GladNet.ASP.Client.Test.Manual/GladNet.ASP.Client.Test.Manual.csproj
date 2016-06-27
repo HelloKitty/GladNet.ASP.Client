@@ -100,6 +100,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\GladNet.ASP.Client.EnqueueStrats\GladNet.ASP.Client.EnqueueStrats.csproj">
+      <Project>{7862c970-7d96-471d-8836-77e295e6ed9c}</Project>
+      <Name>GladNet.ASP.Client.EnqueueStrats</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\GladNet.ASP.Client.Lib\GladNet.ASP.Client.Lib.csproj">
       <Project>{bf264f81-963e-498f-9c06-e480e28eb271}</Project>
       <Name>GladNet.ASP.Client.Lib</Name>
