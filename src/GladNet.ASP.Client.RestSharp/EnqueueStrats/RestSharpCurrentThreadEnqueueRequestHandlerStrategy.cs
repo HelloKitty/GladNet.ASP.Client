@@ -5,14 +5,15 @@ using System.Text;
 using GladNet.Common;
 using RestSharp;
 using GladNet.Serializer;
+using GladNet.ASP.Client.Lib;
 
-namespace GladNet.ASP.Client.Lib
+namespace GladNet.ASP.Client.RestSharp
 {
 	/// <summary>
 	/// Simple implementation of <see cref="IWebRequestHandlerStrategy"/> that uses a single
 	/// thread, the current thread as the caller, to handle a request. This strategy will block.
 	/// </summary>
-	public class CurrentThreadEnqueueRequestHandlerStrategy : IWebRequestHandlerStrategy
+	public class RestSharpCurrentThreadEnqueueRequestHandlerStrategy : IWebRequestHandlerStrategy
 	{
 		/// <summary>
 		/// Internal deserialization strategy for incoming response payloads.
@@ -34,7 +35,7 @@ namespace GladNet.ASP.Client.Lib
 		/// </summary>
 		/// <param name="deserializationService">Deserialization strategy for responses.</param>
 		/// <param name="responseReciever">Message receiver service for dispatching recieved resposne messages.</param>
-		public CurrentThreadEnqueueRequestHandlerStrategy(string baseURL, IDeserializerStrategy deserializationService, INetworkMessageReceiver responseReciever)
+		public RestSharpCurrentThreadEnqueueRequestHandlerStrategy(string baseURL, IDeserializerStrategy deserializationService, INetworkMessageReceiver responseReciever)
 		{
 			httpClient = new RestClient(baseURL);
 			deserializer = deserializationService;

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using Common.Logging;
+using GladNet.ASP.Client.RestSharp;
 
 namespace GladNet.ASP.Client.Test.Manual
 {
@@ -26,7 +27,7 @@ namespace GladNet.ASP.Client.Test.Manual
 			reciever.Setup(x => x.OnNetworkMessageReceive(It.IsAny<IResponseMessage>(), It.IsAny<IMessageParameters>()))
 				.Callback<IResponseMessage, IMessageParameters>(Test);
 
-			CurrentThreadEnqueueRequestHandlerStrategy strat = new CurrentThreadEnqueueRequestHandlerStrategy(@"http://localhost:5000", new ProtobufnetDeserializerStrategy(), reciever.Object);
+			RestSharpCurrentThreadEnqueueRequestHandlerStrategy strat = new RestSharpCurrentThreadEnqueueRequestHandlerStrategy(@"http://localhost:5000", new ProtobufnetDeserializerStrategy(), reciever.Object);
 
 			new ProtobufnetRegistry().Register(typeof(AuthRequest));
 			new ProtobufnetRegistry().Register(typeof(AuthResponse));
