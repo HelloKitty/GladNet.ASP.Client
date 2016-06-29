@@ -62,7 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientInterfaces\RestWebPeerClientMessageSender.cs" />
+    <Compile Include="ClientInterfaces\WebPeerClientMessageSender .cs" />
     <Compile Include="ClientInterfaces\IWebRequestHandlerStrategy.cs" />
     <Compile Include="ClientInterfaces\WebClientPeerDetails.cs" />
     <Compile Include="ClientInterfaces\WebResponseNetworkMessageAdapter.cs" />

@@ -8,17 +8,14 @@ using GladNet.Serializer;
 
 namespace GladNet.ASP.Client.Lib
 {
-	public class RestWebPeerClientMessageSender : IClientPeerNetworkMessageSender, INetworkMessageSender
+	public class WebPeerClientMessageSender : IClientPeerNetworkMessageSender, INetworkMessageSender
 	{
-		private IRestClient httpClient { get; }
-
 		private ISerializerStrategy serializer { get; }
 
 		private IWebRequestHandlerStrategy requestHandler { get; }
 
-		public RestWebPeerClientMessageSender(string baseURL, ISerializerStrategy serializationStrat, IWebRequestHandlerStrategy requestService)
+		public WebPeerClientMessageSender(ISerializerStrategy serializationStrat, IWebRequestHandlerStrategy requestService)
 		{
-			httpClient = new RestClient(baseURL);
 			requestHandler = requestService;
 			serializer = serializationStrat;
 		}
@@ -31,7 +28,7 @@ namespace GladNet.ASP.Client.Lib
 			//TODO: Implement support for args
 
 			//Requests are sent to ASP controlls based on the payload type names.
-			return requestHandler.EnqueueRequest(serializedData, httpClient, payload.GetType().Name);
+			return requestHandler.EnqueueRequest(serializedData, payload.GetType().Name);
 		}
 
 		public SendResult SendRequest<TPacketType>(TPacketType payload) where TPacketType : PacketPayload, IStaticPayloadParameters
@@ -42,7 +39,7 @@ namespace GladNet.ASP.Client.Lib
 			//TODO: Implement support for args
 
 			//Requests are sent to ASP controlls based on the payload type names.
-			return requestHandler.EnqueueRequest(serializedData, httpClient, payload.GetType().Name);
+			return requestHandler.EnqueueRequest(serializedData, payload.GetType().Name);
 		}
 
 		public SendResult TrySendMessage(OperationType opType, PacketPayload payload, DeliveryMethod deliveryMethod, bool encrypt = false, byte channel = 0)

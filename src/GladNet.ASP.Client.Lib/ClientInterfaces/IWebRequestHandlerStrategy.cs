@@ -7,8 +7,11 @@ using System.Text;
 
 namespace GladNet.ASP.Client.Lib
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public interface IWebRequestHandlerStrategy
 	{
-		SendResult EnqueueRequest(byte[] serializedRequest, IRestClient webClient, string requestName);
+		SendResult EnqueueRequest(byte[] serializedRequest, string requestName);
 	}
 }
