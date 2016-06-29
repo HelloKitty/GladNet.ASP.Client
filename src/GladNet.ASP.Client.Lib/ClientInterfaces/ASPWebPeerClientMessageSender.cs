@@ -8,7 +8,7 @@ using GladNet.Serializer;
 
 namespace GladNet.ASP.Client.Lib
 {
-	public class ASPWebPeerClientMessageSender : IClientPeerNetworkMessageSender
+	public class ASPWebPeerClientMessageSender : IClientPeerNetworkMessageSender, INetworkMessageSender
 	{
 		private IRestClient httpClient { get; }
 
@@ -43,6 +43,27 @@ namespace GladNet.ASP.Client.Lib
 
 			//Requests are sent to ASP controlls based on the payload type names.
 			return requestHandler.EnqueueRequest(serializedData, httpClient, payload.GetType().Name);
+		}
+
+		public SendResult TrySendMessage(OperationType opType, PacketPayload payload, DeliveryMethod deliveryMethod, bool encrypt = false, byte channel = 0)
+		{
+			if (CanSend(opType))
+				return SendRequest(payload, deliveryMethod, encrypt, channel);
+			else
+				return SendResult.Invalid;
+		}
+
+		public SendResult TrySendMessage<TPacketType>(OperationType opType, TPacketType payload) where TPacketType : PacketPayload, IStaticPayloadParameters
+		{
+			if (CanSend(opType))
+				return SendRequest(payload);
+			else
+				return SendResult.Invalid;
+		}
+
+		public bool CanSend(OperationType opType)
+		{
+			return opType == OperationType.Request;
 		}
 	}
 }
