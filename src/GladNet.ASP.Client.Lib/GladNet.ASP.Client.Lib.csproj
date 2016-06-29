@@ -62,18 +62,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientInterfaces\ASPWebPeerClientMessageSender.cs" />
+    <Compile Include="ClientInterfaces\RestWebPeerClientMessageSender.cs" />
     <Compile Include="ClientInterfaces\IWebRequestHandlerStrategy.cs" />
+    <Compile Include="ClientInterfaces\WebClientPeerDetails.cs" />
     <Compile Include="ClientInterfaces\WebResponseNetworkMessageAdapter.cs" />
-    <Compile Include="Services\GladNetASPWebPeer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Serialization\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -8,7 +8,7 @@ using GladNet.Serializer;
 
 namespace GladNet.ASP.Client.Lib
 {
-	public class ASPWebPeerClientMessageSender : IClientPeerNetworkMessageSender, INetworkMessageSender
+	public class RestWebPeerClientMessageSender : IClientPeerNetworkMessageSender, INetworkMessageSender
 	{
 		private IRestClient httpClient { get; }
 
@@ -16,9 +16,9 @@ namespace GladNet.ASP.Client.Lib
 
 		private IWebRequestHandlerStrategy requestHandler { get; }
 
-		public ASPWebPeerClientMessageSender(IRestClient client, ISerializerStrategy serializationStrat, IWebRequestHandlerStrategy requestService)
+		public RestWebPeerClientMessageSender(string baseURL, ISerializerStrategy serializationStrat, IWebRequestHandlerStrategy requestService)
 		{
-			httpClient = client;
+			httpClient = new RestClient(baseURL);
 			requestHandler = requestService;
 			serializer = serializationStrat;
 		}
