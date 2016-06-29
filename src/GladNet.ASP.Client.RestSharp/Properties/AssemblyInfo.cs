@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GladNet.ASP.Client.EnqueueStrats")]
+[assembly: AssemblyTitle("GladNet.ASP.Client.RestSharp")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("GladNet.ASP.Client.EnqueueStrats")]
+[assembly: AssemblyProduct("GladNet.ASP.Client.RestSharp")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("7862c970-7d96-471d-8836-77e295e6ed9c")]
+[assembly: Guid("0d87530f-d7cb-46d4-a4c7-91a76aa96394")]
 
 // Version information for an assembly consists of the following four values:
 //

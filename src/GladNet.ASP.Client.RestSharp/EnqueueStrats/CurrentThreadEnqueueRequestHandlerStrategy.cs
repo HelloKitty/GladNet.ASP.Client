@@ -8,19 +8,40 @@ using GladNet.Serializer;
 
 namespace GladNet.ASP.Client.Lib
 {
+	/// <summary>
+	/// Simple implementation of <see cref="IWebRequestHandlerStrategy"/> that uses a single
+	/// thread, the current thread as the caller, to handle a request. This strategy will block.
+	/// </summary>
 	public class CurrentThreadEnqueueRequestHandlerStrategy : IWebRequestHandlerStrategy
 	{
+		/// <summary>
+		/// Internal deserialization strategy for incoming response payloads.
+		/// </summary>
 		private IDeserializerStrategy deserializer { get; }
 
+		/// <summary>
+		/// Internal dispatching service for message receival.
+		/// </summary>
 		private INetworkMessageReceiver responseMessageRecieverService { get; }
 
-		public CurrentThreadEnqueueRequestHandlerStrategy(IDeserializerStrategy deserializationService, INetworkMessageReceiver responseReciever)
+		private IRestClient httpClient { get; }
+
+		//Message responses are dispatched right after requests with this strategy. This is much different
+		//than what is normally found in GladNet2 implementations.
+		/// <summary>
+		/// Creates a new <see cref="IWebRequestHandlerStrategy"/> that handles requests on the calling thread
+		/// and blocks.
+		/// </summary>
+		/// <param name="deserializationService">Deserialization strategy for responses.</param>
+		/// <param name="responseReciever">Message receiver service for dispatching recieved resposne messages.</param>
+		public CurrentThreadEnqueueRequestHandlerStrategy(string baseURL, IDeserializerStrategy deserializationService, INetworkMessageReceiver responseReciever)
 		{
+			httpClient = new RestClient(baseURL);
 			deserializer = deserializationService;
 			responseMessageRecieverService = responseReciever;
 		}
 
-		public SendResult EnqueueRequest(byte[] serializedRequest, IRestClient webClient, string requestName)
+		public SendResult EnqueueRequest(byte[] serializedRequest, string requestName)
 		{
 			//Create a new request that targets the API/RequestName controller
 			//on the ASP server.
@@ -29,7 +50,7 @@ namespace GladNet.ASP.Client.Lib
 			//sends the request with the protobuf content type header.
 			request.AddParameter("application/Protobuf-Net", serializedRequest, ParameterType.RequestBody);
 
-			IRestResponse response = webClient.Post(request);
+			IRestResponse response = httpClient.Post(request);
 
 			if(response.RawBytes != null && response.RawBytes.Count() > 0)
 			{
