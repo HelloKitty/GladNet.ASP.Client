@@ -46,10 +46,16 @@ namespace GladNet.ASP.Client.RestSharp
 		/// <param name="responseReciever">Message receiver service for dispatching recieved resposne messages.</param>
 		public RestSharpCurrentThreadEnqueueRequestHandlerStrategy(string baseURL, IDeserializerStrategy deserializationService, INetworkMessageReceiver responseReciever)
 		{
+			if (String.IsNullOrEmpty(baseURL))
+				throw new ArgumentException($"Parameter {baseURL} is not valid. Either null or empty. Base URL must be the base URL of the web server. (Ex. www.google.com)");
 
-			httpClient = new RestClient(baseURL);
+			if (deserializationService == null)
+				throw new ArgumentNullException(nameof(baseURL), $"Parameter {deserializationService} must not be null. Deserialization for incoming responses is required.");
+		
 			deserializer = deserializationService;
 			responseMessageRecieverService = responseReciever;
+
+			httpClient = new RestClient(baseURL);
 		}
 
 		/// <summary>

@@ -45,13 +45,26 @@ namespace GladNet.ASP.Client.Lib
 		{
 			//TODO: Address port changes when using HTTPS
 
-			//Ok, we're going to guess the remoteport is 80 unless we
-			//see a port specificed in the remoteIP string
-			int port = 80;
+			if (String.IsNullOrEmpty(remoteIP))
+				throw new ArgumentNullException(nameof(remoteIP), $"Parameter {remoteIP} is not valid. Must be non-null and contain a base URL.");
+
+			//Remote HTTP:// or HTTPS://
+			remoteIP = remoteIP.ToLower();
+			remoteIP = remoteIP.Replace(@"http://", "");
+			remoteIP = remoteIP.Replace(@"https://", "");
 
 			//Check the IP string for {0}:{Port} format
 			if (remoteIP.Contains(':'))
-				port = int.Parse(remoteIP.Split(':').Last());
+			{
+				IEnumerable<string> ipStringSplit = remoteIP.Split(':');
+				RemotePort = int.Parse(ipStringSplit.Last());
+
+				remoteIP = ipStringSplit.First(); //get the first part. The IP or domain
+			}
+			else
+				//Ok, we're going to guess the remoteport is 80 unless we
+				//see a port specificed in the remoteIP string
+				RemotePort = 80;
 
 			//Don't know how we get this but some HTTP implementation might give us this info
 			LocalPort = localPort;
