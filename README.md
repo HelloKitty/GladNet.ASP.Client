@@ -12,6 +12,8 @@ Lidgren's: https://github.com/HelloKitty/GladNet2-Lidgren
 
 Photon Server's: https://github.com/HelloKitty/GladNet.PhotonServer
 
+ASP.Client (Client Only): https://github.com/HelloKitty/GladNet.ASP.Client
+
 ## Setup
 
 To use this project you'll first need a couple of things:
@@ -20,7 +22,7 @@ To use this project you'll first need a couple of things:
 
 ## Builds
 
-Available on a Nuget Feed: https://www.myget.org/F/hellokitty/api/v2 [![hellokitty MyGet Build Status](https://www.myget.org/BuildSource/Badge/hellokitty?identifier=a8048ae0-adcd-4997-8862-c3f5fc6adf34)](https://www.myget.org/feed/Packages/hellokitty)
+[TBA]
 
 ##Tests
 
