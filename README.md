@@ -24,6 +24,33 @@ To use this project you'll first need a couple of things:
 
 [TBA]
 
+# How does this Work?
+
+GladNet.ASP.Client isn't really specifically targeting ASP web services. GladNet.ASP.Client communicates with web services/servers through HTTP by sending requests, and receiving responses, from these services/servers. 
+
+You may wonder why ASP is explicitly included in the title of this library. This is because of how GladNet.ASP.Client handles GladNet API requests over HTTP. Simply stated, the HTTP requests can easily fit the routing scheme for ASP Web API/Controllers. The end-point URL for requests in all current GladNet.ASP.Client implementations fits the simple scheme detailed in the below section.
+
+##### Request Scheme
+
+```
+
+HTTP POST to {BaseUrl}/api/{GladNet.Common.PacketPayload Name}
+
+```
+
+Anyone familiar to ASP will recognize that this is a simple routing scheme for Web API controllers. (Fun Fact: Sharing a payload library between client and server allows you compile-time checked routing using nameof in C# 6)
+
+##### What does this mean for non-ASP web services/servers? 
+
+It means only that your HTTP POST handling for these requests should fit the ASP routing scheme laid out above. So long as you respond using the [GladNet Payload API](https://github.com/HelloKitty/GladNet2/tree/master/src/GladNet.Payload) using the same [serialization](https://github.com/HelloKitty/GladNet2/tree/master/src/GladNet.Serializer) scheme this client may communicate with your webserver.
+
+##### Why is there no corresponding server library?
+
+As of right now the concept of utilizing web/HTTP through GladNet2 API is mainly for scalability reasons. HTTP/web is easily scalable and there is no reason to add additional overhead to web services, services that may not be C# and thus unlikely to easily implement the full GladNet2 specification, on the server's end. Servers must only accept and deserialization incoming [GladNet.Payload.PacketPayload](https://github.com/HelloKitty/GladNet2/blob/master/src/GladNet.Payload/Payload/PacketPayload.cs) in the request bodies of the POST requests.
+
+Should a use-case for the full implementation of the GladNet2 specification for web services arise an implementation for ASP [core](https://github.com/aspnet) will be created.
+
+
 ##Tests
 
 #### Linux/Mono - Unit Tests
