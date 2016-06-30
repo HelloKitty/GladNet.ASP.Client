@@ -42,8 +42,7 @@ namespace GladNet.ASP.Client.Test.Manual
 			//strat.EnqueueRequest(null,
 			//	client, nameof(AuthRequest));
 
-			strat.EnqueueRequest(new ProtobufnetSerializerStrategy().Serialize(actualAuthRequest),
-				nameof(AuthRequest));
+			strat.EnqueueRequest(actualAuthRequest);
 
 			Console.ReadKey();
 		}

@@ -7,18 +7,44 @@ using System.Net;
 
 namespace GladNet.ASP.Client.Lib
 {
+	/// <summary>
+	/// Web-based implementation for the GladNet <see cref="IConnectionDetails"/> contract.
+	/// </summary>
 	public class WebClientPeerDetails : IConnectionDetails
 	{
-		public int ConnectionID { get; private set; }
+		/// <summary>
+		/// Indicates the connection ID should the server assign unique
+		/// connection IDs for user-connections.
+		/// </summary>
+		public int ConnectionID { get; }
 
-		public int LocalPort { get; private set; }
+		/// <summary>
+		/// Indicates the local port this Web/HTTP connection is going out over.
+		/// Number will be negative if unavailable.
+		/// </summary>
+		public int LocalPort { get; }
 
-		public IPAddress RemoteIP { get; private set; }
+		/// <summary>
+		/// Indicates the <see cref="IPAddress"/> for the remote web service/host.
+		/// </summary>
+		public IPAddress RemoteIP { get; }
 
-		public int RemotePort { get; private set; }
+		/// <summary>
+		/// Indicates the remote port of the web service.
+		/// Usually this is standard HTTP port 80 (maybe HTTPS 443)
+		/// </summary>
+		public int RemotePort { get; }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="remoteIP"></param>
+		/// <param name="localPort"></param>
+		/// <param name="connectionID"></param>
 		public WebClientPeerDetails(string remoteIP, int localPort, int connectionID)
 		{
+			//TODO: Address port changes when using HTTPS
+
 			//Ok, we're going to guess the remoteport is 80 unless we
 			//see a port specificed in the remoteIP string
 			int port = 80;

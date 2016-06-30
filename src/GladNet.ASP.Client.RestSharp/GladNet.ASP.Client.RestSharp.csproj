@@ -62,7 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EnqueueStrats\CurrentThreadEnqueueRequestHandlerStrategy.cs" />
+    <Compile Include="EnqueueStrats\RestSharpCurrentThreadEnqueueRequestHandlerStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
