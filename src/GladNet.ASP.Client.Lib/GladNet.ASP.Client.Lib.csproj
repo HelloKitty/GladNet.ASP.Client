@@ -38,16 +38,16 @@
       <HintPath>..\..\packages\Common.Logging.Core.3.3.1\lib\net35\Common.Logging.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GladNet.Common, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GladNet.Common.1.0.7\lib\net35\GladNet.Common.dll</HintPath>
+    <Reference Include="GladNet.Common, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GladNet.Common.1.0.9\lib\net35\GladNet.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GladNet.Payload, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GladNet.Payload.1.0.7\lib\net35\GladNet.Payload.dll</HintPath>
+    <Reference Include="GladNet.Payload, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GladNet.Payload.1.0.9\lib\net35\GladNet.Payload.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GladNet.Serializer, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\GladNet.Serializer.1.0.7\lib\net35\GladNet.Serializer.dll</HintPath>
+    <Reference Include="GladNet.Serializer, Version=1.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GladNet.Serializer.1.0.9\lib\net35\GladNet.Serializer.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -62,12 +62,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientInterfaces\ASPWebPeerClientMessageSender.cs" />
+    <Compile Include="ClientInterfaces\WebPeerClientMessageSender .cs" />
     <Compile Include="ClientInterfaces\IWebRequestHandlerStrategy.cs" />
-    <Compile Include="ClientInterfaces\RequestStrategies\CurrentThreadEnqueueRequestHandlerStrategy.cs" />
+    <Compile Include="ClientInterfaces\WebClientPeerDetails.cs" />
     <Compile Include="ClientInterfaces\WebResponseNetworkMessageAdapter.cs" />
-    <Compile Include="Serialization\RestSharpGladNetSerializer.cs" />
-    <Compile Include="Services\GladNetASPWebPeer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

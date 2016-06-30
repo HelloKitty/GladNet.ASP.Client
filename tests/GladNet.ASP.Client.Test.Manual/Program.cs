@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using Common.Logging;
+using GladNet.ASP.Client.RestSharp;
 
 namespace GladNet.ASP.Client.Test.Manual
 {
@@ -18,8 +20,6 @@ namespace GladNet.ASP.Client.Test.Manual
 		{
 			Console.ReadKey();
 
-			RestClient client = new RestClient(@"http://localhost:5000");
-
 			//client.AddHandler("application/Protobuf-Net", )
 
 			Mock<INetworkMessageReceiver> reciever = new Mock<INetworkMessageReceiver>(MockBehavior.Strict);
@@ -27,7 +27,7 @@ namespace GladNet.ASP.Client.Test.Manual
 			reciever.Setup(x => x.OnNetworkMessageReceive(It.IsAny<IResponseMessage>(), It.IsAny<IMessageParameters>()))
 				.Callback<IResponseMessage, IMessageParameters>(Test);
 
-			CurrentThreadEnqueueRequestHandlerStrategy strat = new CurrentThreadEnqueueRequestHandlerStrategy(new ProtobufnetDeserializerStrategy(), reciever.Object);
+			RestSharpCurrentThreadEnqueueRequestHandlerStrategy strat = new RestSharpCurrentThreadEnqueueRequestHandlerStrategy(@"http://localhost:5000", new ProtobufnetDeserializerStrategy(), reciever.Object);
 
 			new ProtobufnetRegistry().Register(typeof(AuthRequest));
 			new ProtobufnetRegistry().Register(typeof(AuthResponse));
@@ -42,8 +42,7 @@ namespace GladNet.ASP.Client.Test.Manual
 			//strat.EnqueueRequest(null,
 			//	client, nameof(AuthRequest));
 
-			strat.EnqueueRequest(new ProtobufnetSerializerStrategy().Serialize(actualAuthRequest),
-				client, nameof(AuthRequest));
+			strat.EnqueueRequest(actualAuthRequest);
 
 			Console.ReadKey();
 		}
