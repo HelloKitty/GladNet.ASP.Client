@@ -6,7 +6,7 @@ notifications:
 
 install:
   - nuget install NUnit.Runners -Version 3.0.1 -OutputDirectory tests/testrunner
-  - nuget restore GladNet.ASP.Client.sln
+  - nuget restore GladNet.ASP.Client.sln -ConfigFile NuGet.config
 
 before_script:
   - chmod +x ./tests/RunTests.sh
