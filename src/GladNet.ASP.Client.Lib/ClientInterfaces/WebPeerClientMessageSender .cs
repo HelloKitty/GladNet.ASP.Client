@@ -26,6 +26,9 @@ namespace GladNet.ASP.Client.Lib
 		/// <param name="requestService">Implementation of the <see cref="IWebRequestHandlerStrategy"/> that actually handles the logic for request payload handling.</param>
 		public WebPeerClientMessageSender(IWebRequestHandlerStrategy requestService)
 		{
+			if (requestService == null)
+				throw new ArgumentNullException(nameof(requestService), $"Parameter {requestService} should not be null. Provide a non-null {nameof(IWebRequestHandlerStrategy)}.");
+
 			requestHandler = requestService;
 		}
 
