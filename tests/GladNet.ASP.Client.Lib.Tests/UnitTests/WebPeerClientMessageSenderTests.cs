@@ -1,4 +1,5 @@
 ﻿using GladNet.Common;
+using GladNet.Payload;
 using Moq;
 using NUnit.Framework;
 using System;

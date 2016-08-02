@@ -6,6 +6,9 @@ using GladNet.Common;
 using RestSharp;
 using GladNet.Serializer;
 using System.Diagnostics.CodeAnalysis;
+using GladNet.Engine.Common;
+using GladNet.Payload;
+using GladNet.Message;
 
 namespace GladNet.ASP.Client.Lib
 {
@@ -13,7 +16,7 @@ namespace GladNet.ASP.Client.Lib
 	/// Web implementation for <see cref="IClientPeerNetworkMessageSender"/> and <see cref="INetworkMessageSender"/>
 	/// that mediates the sending of <see cref="PacketPayload"/>s to web servers.
 	/// </summary>
-	public class WebPeerClientMessageSender : IClientPeerNetworkMessageSender, INetworkMessageSender
+	public class WebPeerClientMessageSender : IClientPeerPayloadSender, INetworkMessageRouterService
 	{
 		/// <summary>
 		/// Internal webrequest handling strategy for outgoing <see cref="PacketPayload"/>s.
@@ -116,6 +119,11 @@ namespace GladNet.ASP.Client.Lib
 		public bool CanSend(OperationType opType)
 		{
 			return opType == OperationType.Request;
+		}
+
+		public SendResult TryRouteMessage<TMessageType>(TMessageType message, DeliveryMethod deliveryMethod, bool encrypt = false, byte channel = 0) where TMessageType : INetworkMessage, IRoutableMessage, IOperationTypeMappable
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

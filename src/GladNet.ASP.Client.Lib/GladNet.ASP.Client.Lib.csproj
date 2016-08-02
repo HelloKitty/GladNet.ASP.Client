@@ -81,7 +81,6 @@
     <Compile Include="ClientInterfaces\WebPeerClientMessageSender .cs" />
     <Compile Include="ClientInterfaces\IWebRequestHandlerStrategy.cs" />
     <Compile Include="ClientInterfaces\WebClientPeerDetails.cs" />
-    <Compile Include="ClientInterfaces\WebResponseNetworkMessageAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

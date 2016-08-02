@@ -11,6 +11,8 @@ using System.Net;
 using System.Text;
 using Common.Logging;
 using GladNet.ASP.Client.RestSharp;
+using GladNet.Message;
+using GladNet.Payload;
 
 namespace GladNet.ASP.Client.Test.Manual
 {

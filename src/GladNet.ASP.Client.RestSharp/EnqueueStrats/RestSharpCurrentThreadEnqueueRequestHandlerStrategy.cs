@@ -6,6 +6,8 @@ using GladNet.Common;
 using RestSharp;
 using GladNet.Serializer;
 using GladNet.ASP.Client.Lib;
+using GladNet.Message;
+using GladNet.Payload;
 
 namespace GladNet.ASP.Client.RestSharp
 {
