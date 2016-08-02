@@ -1,4 +1,6 @@
 ﻿using GladNet.Common;
+using GladNet.Message;
+using GladNet.Payload;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -11,14 +13,20 @@ namespace GladNet.ASP.Client.Lib
 	/// Contract for web-request handling functionality.
 	/// Handles a serialized <see cref="PacketPayload"/> with the given request name.
 	/// </summary>
-	public interface IWebRequestHandlerStrategy
+	public interface IWebRequestEnqueueStrategy
 	{
 		/// <summary>
 		/// Enqueues a webrequest to be handled with the provided serialized data.
 		/// </summary>
 		/// <param name="requestPayload">Request payload.</param>
-		/// <param name="requestName">String <see cref="Type"/> name of the <see cref="PacketPayload"/> type.</param>
 		/// <returns>Returns the result of the enqueued request.</returns>
 		SendResult EnqueueRequest(PacketPayload requestPayload);
+
+		/// <summary>
+		/// Enqueues a webrequest to be handled with the provided request message.
+		/// </summary>
+		/// <param name="requestMessage">Request message.</param>
+		/// <returns>Returns the result of the enqueued request.</returns>
+		SendResult EnqueueRequest(RequestMessage requestMessage);
 	}
 }

@@ -6,6 +6,9 @@ using GladNet.Common;
 using RestSharp;
 using GladNet.Serializer;
 using System.Diagnostics.CodeAnalysis;
+using GladNet.Engine.Common;
+using GladNet.Payload;
+using GladNet.Message;
 
 namespace GladNet.ASP.Client.Lib
 {
@@ -13,23 +16,23 @@ namespace GladNet.ASP.Client.Lib
 	/// Web implementation for <see cref="IClientPeerNetworkMessageSender"/> and <see cref="INetworkMessageSender"/>
 	/// that mediates the sending of <see cref="PacketPayload"/>s to web servers.
 	/// </summary>
-	public class WebPeerClientMessageSender : IClientPeerNetworkMessageSender, INetworkMessageSender
+	public class WebPeerClientMessageSender : IClientPeerPayloadSender, INetworkMessageRouterService
 	{
 		/// <summary>
 		/// Internal webrequest handling strategy for outgoing <see cref="PacketPayload"/>s.
 		/// </summary>
-		private IWebRequestHandlerStrategy requestHandler { get; }
+		private IWebRequestEnqueueStrategy requestEnqueueStrat { get; }
 
 		/// <summary>
 		/// Creates an instance of the <see cref="WebPeerClientMessageSender"/> service.
 		/// </summary>
-		/// <param name="requestService">Implementation of the <see cref="IWebRequestHandlerStrategy"/> that actually handles the logic for request payload handling.</param>
-		public WebPeerClientMessageSender(IWebRequestHandlerStrategy requestService)
+		/// <param name="requestService">Implementation of the <see cref="IWebRequestEnqueueStrategy"/> that actually handles the logic for request payload handling.</param>
+		public WebPeerClientMessageSender(IWebRequestEnqueueStrategy requestService)
 		{
 			if (requestService == null)
-				throw new ArgumentNullException(nameof(requestService), $"Parameter {requestService} should not be null. Provide a non-null {nameof(IWebRequestHandlerStrategy)}.");
+				throw new ArgumentNullException(nameof(requestService), $"Parameter {requestService} should not be null. Provide a non-null {nameof(IWebRequestEnqueueStrategy)}.");
 
-			requestHandler = requestService;
+			requestEnqueueStrat = requestService;
 		}
 
 		// <summary>
@@ -50,7 +53,7 @@ namespace GladNet.ASP.Client.Lib
 			//TODO: Implement support for args
 
 			//Requests are sent to ASP controlls based on the payload type names.
-			return requestHandler.EnqueueRequest(payload);
+			return requestEnqueueStrat.EnqueueRequest(payload);
 		}
 
 		// <summary>
@@ -70,7 +73,7 @@ namespace GladNet.ASP.Client.Lib
 			//TODO: Implement support for args
 
 			//Requests are sent to ASP controlls based on the payload type names.
-			return requestHandler.EnqueueRequest(payload);
+			return requestEnqueueStrat.EnqueueRequest(payload);
 		}
 
 		/// <summary>
@@ -116,6 +119,22 @@ namespace GladNet.ASP.Client.Lib
 		public bool CanSend(OperationType opType)
 		{
 			return opType == OperationType.Request;
+		}
+
+		public SendResult TryRouteMessage<TMessageType>(TMessageType message, DeliveryMethod deliveryMethod, bool encrypt = false, byte channel = 0) 
+			where TMessageType : INetworkMessage, IRoutableMessage, IOperationTypeMappable
+		{
+			//TODO: Deal with additional parameters
+
+			switch (message.OperationTypeMappedValue)
+			{		
+				case OperationType.Request:
+					return requestEnqueueStrat.EnqueueRequest(message as RequestMessage); //TODO: use IRequestMessage
+				case OperationType.Event:
+				case OperationType.Response:
+				default:
+					throw new InvalidProgramException($"ASP client cannot handle message types other than {typeof(IRequestMessage).Name}.");
+			}
 		}
 	}
 }

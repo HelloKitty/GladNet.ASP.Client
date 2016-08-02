@@ -1,4 +1,6 @@
 ﻿using GladNet.Common;
+using GladNet.Message;
+using GladNet.Payload;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -15,7 +17,7 @@ namespace GladNet.ASP.Client.Lib.Tests
 		public static void Test_Ctor_Doesnt_Throw_On_Correct_Parameters()
 		{
 			//assert
-			WebPeerClientMessageSender sender = new WebPeerClientMessageSender(Mock.Of<IWebRequestHandlerStrategy>());
+			WebPeerClientMessageSender sender = new WebPeerClientMessageSender(Mock.Of<IWebRequestEnqueueStrategy>());
 		}
 
 		[Test]
@@ -32,7 +34,7 @@ namespace GladNet.ASP.Client.Lib.Tests
 		public static void Test_CanSend_Only_Indicates_Request_Is_Valid(OperationType opType, bool expectedResult)
 		{
 			//arrange
-			WebPeerClientMessageSender sender = new WebPeerClientMessageSender(Mock.Of<IWebRequestHandlerStrategy>());
+			WebPeerClientMessageSender sender = new WebPeerClientMessageSender(Mock.Of<IWebRequestEnqueueStrategy>());
 
 			//assert
 			Assert.AreEqual(expectedResult, sender.CanSend(opType));
@@ -47,7 +49,7 @@ namespace GladNet.ASP.Client.Lib.Tests
 			//arrange
 
 			//We have to setup the enqueue service to indicate sent for this test
-			Mock<IWebRequestHandlerStrategy> handlerStrat = new Mock<IWebRequestHandlerStrategy>();
+			Mock<IWebRequestEnqueueStrategy> handlerStrat = new Mock<IWebRequestEnqueueStrategy>();
 			handlerStrat.Setup(x => x.EnqueueRequest(It.IsAny<PacketPayload>()))
 				.Returns(SendResult.Sent);
 
@@ -58,6 +60,28 @@ namespace GladNet.ASP.Client.Lib.Tests
 
 			//assert
 			Assert.AreEqual(expectedResult, result);
+		}
+
+		[Test]
+		public static void Test_TryRouteMessage_Indicates_Success_On_Request_Message()
+		{
+			//arrange
+
+			//We have to setup the enqueue service to indicate sent for this test
+			Mock<IWebRequestEnqueueStrategy> handlerStrat = new Mock<IWebRequestEnqueueStrategy>();
+			handlerStrat.Setup(x => x.EnqueueRequest(It.IsAny<RequestMessage>()))
+				.Returns(SendResult.Sent);
+
+			handlerStrat.Setup(x => x.EnqueueRequest((RequestMessage)null))
+				.Throws<ArgumentNullException>();
+
+			WebPeerClientMessageSender sender = new WebPeerClientMessageSender(handlerStrat.Object);
+
+			//act: try to send
+			SendResult result = sender.TryRouteMessage(new RequestMessage(Mock.Of<PacketPayload>()), DeliveryMethod.ReliableDiscardStale);
+
+			//assert
+			Assert.AreEqual(SendResult.Sent, result);
 		}
 	}
 }
