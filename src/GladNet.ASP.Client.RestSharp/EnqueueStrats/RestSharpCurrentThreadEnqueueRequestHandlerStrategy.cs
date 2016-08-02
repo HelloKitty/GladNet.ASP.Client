@@ -8,6 +8,7 @@ using GladNet.Serializer;
 using GladNet.ASP.Client.Lib;
 using GladNet.Message;
 using GladNet.Payload;
+using GladNet.Engine.Common;
 
 namespace GladNet.ASP.Client.RestSharp
 {
@@ -37,6 +38,13 @@ namespace GladNet.ASP.Client.RestSharp
 		/// </summary>
 		private IRestClient httpClient { get; }
 
+		/// <summary>
+		/// The connection AUID of the paired connection for this enqueue strategy.
+		/// </summary>
+		private int pairedConnectionAUID { get; }
+
+		private INetworkMessageRouteBackService messageRoutebackService { get; }
+
 		//Message responses are dispatched right after requests with this strategy. This is much different
 		//than what is normally found in GladNet2 implementations.
 		/// <summary>
@@ -46,18 +54,29 @@ namespace GladNet.ASP.Client.RestSharp
 		/// <param name="baseURL">Base string for the end-poind webserver. (Ex. www.google.com/)</param>
 		/// <param name="deserializationService">Deserialization strategy for responses.</param>
 		/// <param name="responseReciever">Message receiver service for dispatching recieved resposne messages.</param>
-		public RestSharpCurrentThreadEnqueueRequestHandlerStrategy(string baseURL, IDeserializerStrategy deserializationService, INetworkMessageReceiver responseReciever)
+		public RestSharpCurrentThreadEnqueueRequestHandlerStrategy(string baseURL, IDeserializerStrategy deserializationService, INetworkMessageReceiver responseReciever, int connectionAUID
+#if !ENDUSER
+			, INetworkMessageRouteBackService routebackService) //unfortunaly the single-threaded blocking enqueue strat needs the routeback service to function.
+#endif
 		{
 			if (String.IsNullOrEmpty(baseURL))
 				throw new ArgumentException($"Parameter {baseURL} is not valid. Either null or empty. Base URL must be the base URL of the web server. (Ex. www.google.com)");
 
 			if (deserializationService == null)
 				throw new ArgumentNullException(nameof(baseURL), $"Parameter {deserializationService} must not be null. Deserialization for incoming responses is required.");
-		
+#if !ENDUSER
+			if (routebackService == null)
+				throw new ArgumentNullException(nameof(routebackService), $"{nameof(RestSharpCurrentThreadEnqueueRequestHandlerStrategy)} requires {(nameof(INetworkMessageRouteBackService))} as it handles responses too.");
+#endif
+
 			deserializer = deserializationService;
 			responseMessageRecieverService = responseReciever;
 
 			httpClient = new RestClient(baseURL);
+
+#if !ENDUSER
+			messageRoutebackService = routebackService;
+#endif
 		}
 
 		/// <summary>
@@ -125,7 +144,22 @@ namespace GladNet.ASP.Client.RestSharp
 			if (response.RawBytes != null && response.RawBytes.Count() > 0)
 			{
 				//With GladNet we expect to get back a NetworkMessage so we should attempt to deserialize one.
-				NetworkMessage responseMessage = deserializer.Deserialize<NetworkMessage>(response.RawBytes);
+				ResponseMessage responseMessage = deserializer.Deserialize<ResponseMessage>(response.RawBytes);
+
+#if !ENDUSER
+				//If the message is routing back we don't need it to hit the user.
+				//We can routeback now
+				if(responseMessage.isRoutingBack)
+				{
+					//This is a difficult decision but we should indicate Sent after routing back as the message definitely was sent
+					messageRoutebackService.Route(responseMessage, null); //TODO: Deal with message parameters
+
+					return SendResult.Sent; //return, don't let the message be dispatched
+				}
+
+				//For GladNet2 2.x routing we have to push the AUID into the response message if it's not routing back
+				responseMessage.Push(pairedConnectionAUID);
+#endif
 
 				responseMessage.Dispatch(responseMessageRecieverService, null); //TODO: Add message parameters.
 			}
