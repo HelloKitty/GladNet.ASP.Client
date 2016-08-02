@@ -46,6 +46,18 @@
       <HintPath>..\..\packages\GladNet.Common.2.0.9\lib\net35\GladNet.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GladNet.Encryption, Version=2.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GladNet.Encryption.2.0.9\lib\net35\GladNet.Encryption.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GladNet.Engine.Common, Version=2.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GladNet.Engine.Common.2.0.9\lib\net35\GladNet.Engine.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GladNet.Message, Version=2.0.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GladNet.Message.2.0.9\lib\net35\GladNet.Message.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="GladNet.Payload, Version=2.0.9.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GladNet.Payload.2.0.9\lib\net35\GladNet.Payload.dll</HintPath>
       <Private>True</Private>
