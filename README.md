@@ -46,10 +46,9 @@ It means only that your HTTP POST handling for these requests should fit the ASP
 
 ##### Why is there no corresponding server library?
 
-As of right now the concept of utilizing web/HTTP through GladNet2 API is mainly for scalability reasons. HTTP/web is easily scalable and there is no reason to add additional overhead to web services, services that may not be C# and thus unlikely to easily implement the full GladNet2 specification, on the server's end. Servers must only accept and deserialization incoming [GladNet.Payload.PacketPayload](https://github.com/HelloKitty/GladNet2/blob/master/src/GladNet.Payload/Payload/PacketPayload.cs) in the request bodies of the POST requests.
+There used to be no server library. However, with the new GladNet 2.x routing changes and changes to the message API it is now required to implement the very light server library.
 
-Should a use-case for the full implementation of the GladNet2 specification for web services arise an implementation for ASP [core](https://github.com/aspnet) will be created.
-
+If you do not implemented the library you must know that the client expects servers to accept and deserialization incoming NetworkMessages in the request bodies of the POST requests.
 
 ##Tests
 

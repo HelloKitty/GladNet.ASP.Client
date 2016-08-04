@@ -135,7 +135,7 @@ namespace GladNet.ASP.Client.RestSharp
 
 			//TODO: Don't just assume serialization format
 			//sends the request with the protobuf content type header.
-			request.AddParameter("application/Protobuf-Net", serializedRequest, ParameterType.RequestBody);
+			request.AddParameter("application/gladnet", serializedRequest, ParameterType.RequestBody);
 
 			IRestResponse response = httpClient.Post(request);
 
