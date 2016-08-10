@@ -40,7 +40,7 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 		{
 			//TODO: Add Header to JWT response.
 			//if the contenttype is not for JWT we can ignore
-			if(response.ContentType == null || response.ContentType.Contains("application/json"))
+			if(response.ContentType == null || response.ContentType.Contains("json"))
 			{
 				return;
 			}
