@@ -7,6 +7,9 @@ using RestSharp;
 using GladNet.Serializer;
 using GladNet.Message;
 using GladNet.Payload.Authentication;
+using RestSharp.Extensions.MonoHttp;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 {
@@ -25,9 +28,16 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 		/// </summary>
 		private ISerializerStrategy serializerStrategy { get; }
 
-		public JWTAuthenticationMiddleware(IDeserializerStrategy deserializer, ISerializerStrategy serializer)
+		/// <summary>
+		/// Token registry to use to register any recieved tokens.
+		/// </summary>
+		private ITokenRegistry tokenRegistryService { get; }
+
+		public JWTAuthenticationMiddleware(IDeserializerStrategy deserializer, ISerializerStrategy serializer, ITokenRegistry tokenRegistry)
 		{
 			deserializerStrategy = deserializer;
+			serializerStrategy = serializer;
+			tokenRegistryService = tokenRegistry;
 		}
 
 		/// <summary>
@@ -55,10 +65,26 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 			//serialize payload
 			message.Payload.Serialize(serializerStrategy);
 
+			if(response.StatusCode == System.Net.HttpStatusCode.OK)
+				//Pull the JWT model from the content
+				try
+				{
+					JWTModel model = JsonConvert.DeserializeObject<JWTModel>(response.Content);
+
+					//If this is true when we probably have a valid token
+					if (model != null && !String.IsNullOrEmpty(model.AccessToken))
+						tokenRegistryService.RegisterToken(model.AccessToken);
+				}
+				catch(Exception e)
+				{
+					throw new Exception($"Failed to deserialize the {nameof(JWTModel)} from the JWT authorization response even on OK HTTP resonse.", e);
+				}
+
 			//spoof the response by replacing the bytes with a response message
 			response.RawBytes = serializerStrategy.Serialize(message);
 
 			//TODO: Grab the accesstoken and push it into a service.
+			
 		}
 
 		private AuthenticationResponse BuildResponseFromContent(string content)
