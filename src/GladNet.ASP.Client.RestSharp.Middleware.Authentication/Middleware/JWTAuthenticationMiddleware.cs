@@ -72,7 +72,7 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 					JWTModel model = JsonConvert.DeserializeObject<JWTModel>(response.Content);
 
 					//If this is true when we probably have a valid token
-					if (model != null && !String.IsNullOrEmpty(model.AccessToken))
+					if (model != null && model.isTokenValid)
 						tokenRegistryService.RegisterToken(model.AccessToken);
 				}
 				catch(Exception e)
@@ -81,10 +81,7 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 				}
 
 			//spoof the response by replacing the bytes with a response message
-			response.RawBytes = serializerStrategy.Serialize(message);
-
-			//TODO: Grab the accesstoken and push it into a service.
-			
+			response.RawBytes = serializerStrategy.Serialize(message);	
 		}
 
 		private AuthenticationResponse BuildResponseFromContent(string content)
