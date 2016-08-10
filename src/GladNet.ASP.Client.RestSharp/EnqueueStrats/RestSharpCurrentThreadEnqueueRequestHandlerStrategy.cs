@@ -16,7 +16,7 @@ namespace GladNet.ASP.Client.RestSharp
 	/// Simple implementation of <see cref="IWebRequestEnqueueStrategy"/> that uses a single
 	/// thread, the current thread as the caller, to handle a request. This strategy will block.
 	/// </summary>
-	public class RestSharpCurrentThreadEnqueueRequestHandlerStrategy : IWebRequestEnqueueStrategy
+	public class RestSharpCurrentThreadEnqueueRequestHandlerStrategy : IWebRequestEnqueueStrategy, IMiddlewareRegistry
 	{
 		/// <summary>
 		/// Internal deserialization strategy for incoming response payloads.
@@ -45,6 +45,11 @@ namespace GladNet.ASP.Client.RestSharp
 
 		private INetworkMessageRouteBackService messageRoutebackService { get; }
 
+		/// <summary>
+		/// Enumerable collection of <see cref="IRestSharpMiddleWare"/> services.
+		/// </summary>
+		private IList<IRestSharpMiddleWare> restsharpMiddlewares { get; }
+
 		//Message responses are dispatched right after requests with this strategy. This is much different
 		//than what is normally found in GladNet2 implementations.
 		/// <summary>
@@ -54,7 +59,7 @@ namespace GladNet.ASP.Client.RestSharp
 		/// <param name="baseURL">Base string for the end-poind webserver. (Ex. www.google.com/)</param>
 		/// <param name="deserializationService">Deserialization strategy for responses.</param>
 		/// <param name="responseReciever">Message receiver service for dispatching recieved resposne messages.</param>
-		public RestSharpCurrentThreadEnqueueRequestHandlerStrategy(string baseURL, IDeserializerStrategy deserializationService, INetworkMessageReceiver responseReciever, int connectionAUID
+		public RestSharpCurrentThreadEnqueueRequestHandlerStrategy(string baseURL, IDeserializerStrategy deserializationService, ISerializerStrategy serializerStrategy, INetworkMessageReceiver responseReciever, int connectionAUID
 #if !ENDUSER
 			, INetworkMessageRouteBackService routebackService) //unfortunaly the single-threaded blocking enqueue strat needs the routeback service to function.
 #endif
@@ -68,15 +73,28 @@ namespace GladNet.ASP.Client.RestSharp
 			if (routebackService == null)
 				throw new ArgumentNullException(nameof(routebackService), $"{nameof(RestSharpCurrentThreadEnqueueRequestHandlerStrategy)} requires {(nameof(INetworkMessageRouteBackService))} as it handles responses too.");
 #endif
-
+			serializer = serializerStrategy;
 			deserializer = deserializationService;
 			responseMessageRecieverService = responseReciever;
 
+			restsharpMiddlewares = new List<IRestSharpMiddleWare>(2);
 			httpClient = new RestClient(baseURL);
 
 #if !ENDUSER
 			messageRoutebackService = routebackService;
 #endif
+		}
+
+		/// <summary>
+		/// Attempts to register the middleware.
+		/// </summary>
+		/// <param name="middleware">The middleware to register.</param>
+		/// <returns>Indicates if the registration was successful.</returns>
+		public bool Register(IRestSharpMiddleWare middleware)
+		{
+			restsharpMiddlewares.Add(middleware);
+
+			return true;
 		}
 
 		/// <summary>
@@ -92,11 +110,13 @@ namespace GladNet.ASP.Client.RestSharp
 			if (requestPayload == null)
 				throw new ArgumentNullException(nameof(requestPayload), $"Provided parameter request payload {requestPayload} is null.");
 
-			return EnqueueRequest(new RequestMessage(requestPayload), requestPayload.GetType().Name);
+			return EnqueueRequest(new RequestMessage(requestPayload), requestPayload.GetType().Name, requestPayload);
 		}
 
 		public SendResult EnqueueRequest(RequestMessage requestMessage)
 		{
+			PacketPayload payload = requestMessage.Payload.Data; //reference to save the payload
+
 			requestMessage.Payload.Serialize(serializer); //have to serialize payload first
 			byte[] serializedData = serializer.Serialize(requestMessage);
 
@@ -109,10 +129,10 @@ namespace GladNet.ASP.Client.RestSharp
 			if (payloadName == null)
 				throw new InvalidOperationException($"Failed to determine endpoint URL due to invalid or unavailable payload name.");
 
-			return EnqueueRequest(serializedData, payloadName);
+			return EnqueueRequest(serializedData, payloadName, payload);
 		}
 
-		public SendResult EnqueueRequest(RequestMessage requestMessage, string payloadName)
+		public SendResult EnqueueRequest(RequestMessage requestMessage, string payloadName, PacketPayload payload)
 		{
 			requestMessage.Payload.Serialize(serializer); //have to serialize payload first
 			byte[] serializedData = serializer.Serialize(requestMessage);
@@ -124,10 +144,10 @@ namespace GladNet.ASP.Client.RestSharp
 			if (payloadName == null)
 				throw new InvalidOperationException($"Failed to determine endpoint URL due to invalid or unavailable payload name.");
 
-			return EnqueueRequest(serializedData, payloadName);
+			return EnqueueRequest(serializedData, payloadName, payload);
 		}
 
-		public SendResult EnqueueRequest(byte[] serializedRequest, string payloadName)
+		public SendResult EnqueueRequest(byte[] serializedRequest, string payloadName, PacketPayload payload)
 		{
 			//Create a new request that targets the API/RequestName controller
 			//on the ASP server.
@@ -137,7 +157,12 @@ namespace GladNet.ASP.Client.RestSharp
 			//sends the request with the protobuf content type header.
 			request.AddParameter("application/gladnet", serializedRequest, ParameterType.RequestBody);
 
+			//Below we process outgoing and then incoming middlewares
+			ProcessRequestMiddlewares(request, payload);
+
 			IRestResponse response = httpClient.Post(request);
+
+			ProcessResponseMiddlewares(response);
 
 			//We should check the bytes returned in a response
 			//We expect a NetworkMessage (in GladNet2 to preserve routing information)
@@ -152,7 +177,7 @@ namespace GladNet.ASP.Client.RestSharp
 				if(responseMessage.isRoutingBack)
 				{
 					//This is a difficult decision but we should indicate Sent after routing back as the message definitely was sent
-					messageRoutebackService.Route(responseMessage, null); //TODO: Deal with message parameters
+					messageRoutebackService.Route(responseMessage, DefaultWebMessageParameters.Default); //TODO: Deal with message parameters
 
 					return SendResult.Sent; //return, don't let the message be dispatched
 				}
@@ -161,10 +186,40 @@ namespace GladNet.ASP.Client.RestSharp
 				responseMessage.Push(pairedConnectionAUID);
 #endif
 
-				responseMessage.Dispatch(responseMessageRecieverService, null); //TODO: Add message parameters.
+				//Must deserialize the payload before it reaches the user.
+				responseMessage.Payload.Deserialize(deserializer);
+
+				responseMessage.Dispatch(responseMessageRecieverService, DefaultWebMessageParameters.Default); //TODO: Add message parameters.
 			}
 
 			return SendResult.Sent;
+		}
+
+		/// <summary>
+		/// Handles outgoing requests using the internal registered middlewares.
+		/// </summary>
+		/// <param name="request">Request to process.</param>
+		/// <param name="payload">Payload to process.</param>
+		private void ProcessRequestMiddlewares(IRestRequest request, PacketPayload payload)
+		{
+			//We move forward through the middlewares to give them a chance
+			//to process the requests.
+			for (int i = 0; i < restsharpMiddlewares.Count; i++)
+				restsharpMiddlewares[i].ProcessOutgoingRequest(request, payload);
+		}
+
+
+		/// <summary>
+		/// Handles incoming responses using the internal registered middlewares.
+		/// </summary>
+		/// <param name="response">Request to process.</param>
+		/// <param name="payload">Payload to process.</param>
+		private void ProcessResponseMiddlewares(IRestResponse response)
+		{
+			//We move backwards through the middlewares to give them a chance
+			//to process the responses.
+			for (int i = restsharpMiddlewares.Count - 1; i >= 0; i--)
+				restsharpMiddlewares[i].ProcessIncomingResponse(response);
 		}
 	}
 }

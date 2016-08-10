@@ -1,5 +1,4 @@
-﻿using GladLive.Web.Payloads.Authentication;
-using GladNet.ASP.Client.Lib;
+﻿using GladNet.ASP.Client.Lib;
 using GladNet.Common;
 using GladNet.Serializer.Protobuf;
 using Moq;
@@ -14,6 +13,9 @@ using GladNet.ASP.Client.RestSharp;
 using GladNet.Message;
 using GladNet.Payload;
 using GladNet.Engine.Common;
+using GladNet.ASP.Client.RestSharp.Middleware.Authentication;
+using GladNet.Payload.Authentication;
+using GladNet.Serializer;
 
 namespace GladNet.ASP.Client.Test.Manual
 {
@@ -21,38 +23,48 @@ namespace GladNet.ASP.Client.Test.Manual
 	{
 		static void Main(string[] args)
 		{
-			Console.ReadKey();
-
-			//client.AddHandler("application/Protobuf-Net", )
+			new ProtobufnetRegistry().RegisterAutenticationPayloads();
+			new ProtobufnetRegistry().Register(typeof(NetworkMessage));
+			new ProtobufnetRegistry().Register(typeof(RequestMessage));	
+			new ProtobufnetRegistry().Register(typeof(ResponseMessage));
 
 			Mock<INetworkMessageReceiver> reciever = new Mock<INetworkMessageReceiver>(MockBehavior.Strict);
 
 			reciever.Setup(x => x.OnNetworkMessageReceive(It.IsAny<IResponseMessage>(), It.IsAny<IMessageParameters>()))
 				.Callback<IResponseMessage, IMessageParameters>(Test);
 
-			RestSharpCurrentThreadEnqueueRequestHandlerStrategy strat = new RestSharpCurrentThreadEnqueueRequestHandlerStrategy(@"http://localhost:5000", new ProtobufnetDeserializerStrategy(), reciever.Object, 0, Mock.Of<INetworkMessageRouteBackService>());
+			RestSharpCurrentThreadEnqueueRequestHandlerStrategy strat = new RestSharpCurrentThreadEnqueueRequestHandlerStrategy(@"http://localhost:5000", new ProtobufnetDeserializerStrategy(), new ProtobufnetSerializerStrategy(), reciever.Object, 0, Mock.Of<INetworkMessageRouteBackService>());
 
-			new ProtobufnetRegistry().Register(typeof(AuthRequest));
-			new ProtobufnetRegistry().Register(typeof(AuthResponse));
+			JWTTokenServiceManager tokenServiceManager = new JWTTokenServiceManager();
 
-			AuthRequest request = new AuthRequest(IPAddress.Broadcast, new LoginDetails("test", new byte[5]));
+			strat.RegisterAuthenticationMiddlewares(new ProtobufnetSerializerStrategy(), new ProtobufnetDeserializerStrategy(), tokenServiceManager, tokenServiceManager);
+			//AuthRequest request = new AuthRequest(IPAddress.Broadcast, new LoginDetails("test", new byte[5]));
 
+			AuthenticationRequest authRequest = new AuthenticationRequest("Admin", "Test123$");
 
-			PacketPayload actualAuthRequest = (new ProtobufnetDeserializerStrategy()).Deserialize<PacketPayload>((new ProtobufnetSerializerStrategy().Serialize(request)));
+			strat.EnqueueRequest(authRequest);
+
+			//PacketPayload actualAuthRequest = (new ProtobufnetDeserializerStrategy()).Deserialize<PacketPayload>((new ProtobufnetSerializerStrategy().Serialize(request)));
 			//strat.EnqueueRequest(new ProtobufnetSerializerStrategy().Serialize("hello"),
 			//	client, nameof(AuthRequest));
 
 			//strat.EnqueueRequest(null,
 			//	client, nameof(AuthRequest));
 
-			strat.EnqueueRequest(actualAuthRequest);
+			//strat.EnqueueRequest(actualAuthRequest);
+
+			Console.WriteLine($"isTokenAvailable: {tokenServiceManager.isTokenAvailable}\n\n\n\n Token: {tokenServiceManager.TokenString}\n\n\n\n TokenHeader: {tokenServiceManager.FullTokenHeaderValue}");
 
 			Console.ReadKey();
 		}
 
 		private static void Test(IResponseMessage message, IMessageParameters parameters)
 		{
-			Console.WriteLine(((AuthResponse)message.Payload.Data).ResponseCode);
+			Console.WriteLine("Recieved response");
+
+			AuthenticationResponse response = message.Payload.Data as AuthenticationResponse;
+
+			Console.WriteLine($"Successful: {response.AuthenticationSuccessful} OptionalError: {response.OptionalError} OptionErrorMessage: {response.OptionalErrorMessage}");
 		}
 	}
 }

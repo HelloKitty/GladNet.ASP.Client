@@ -5,12 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: InternalsVisibleTo("GladNet.ASP.Client.RestSharp.Tests", AllInternalsVisible = true)]
-[assembly: AssemblyTitle("GladNet.ASP.Client.RestSharp")]
+[assembly: AssemblyTitle("GladNet.ASP.Client.RestSharp.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("GladNet.ASP.Client.RestSharp")]
+[assembly: AssemblyProduct("GladNet.ASP.Client.RestSharp.Tests")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("0d87530f-d7cb-46d4-a4c7-91a76aa96394")]
+[assembly: Guid("06157eb0-f5e8-416e-9fa1-e26dd3fe5393")]
 
 // Version information for an assembly consists of the following four values:
 //
