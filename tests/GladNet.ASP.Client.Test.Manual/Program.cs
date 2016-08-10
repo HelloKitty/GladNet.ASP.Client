@@ -1,5 +1,4 @@
-﻿using GladLive.Web.Payloads.Authentication;
-using GladNet.ASP.Client.Lib;
+﻿using GladNet.ASP.Client.Lib;
 using GladNet.Common;
 using GladNet.Serializer.Protobuf;
 using Moq;
@@ -32,27 +31,24 @@ namespace GladNet.ASP.Client.Test.Manual
 
 			RestSharpCurrentThreadEnqueueRequestHandlerStrategy strat = new RestSharpCurrentThreadEnqueueRequestHandlerStrategy(@"http://localhost:5000", new ProtobufnetDeserializerStrategy(), reciever.Object, 0, Mock.Of<INetworkMessageRouteBackService>());
 
-			new ProtobufnetRegistry().Register(typeof(AuthRequest));
-			new ProtobufnetRegistry().Register(typeof(AuthResponse));
-
-			AuthRequest request = new AuthRequest(IPAddress.Broadcast, new LoginDetails("test", new byte[5]));
+			//AuthRequest request = new AuthRequest(IPAddress.Broadcast, new LoginDetails("test", new byte[5]));
 
 
-			PacketPayload actualAuthRequest = (new ProtobufnetDeserializerStrategy()).Deserialize<PacketPayload>((new ProtobufnetSerializerStrategy().Serialize(request)));
+			//PacketPayload actualAuthRequest = (new ProtobufnetDeserializerStrategy()).Deserialize<PacketPayload>((new ProtobufnetSerializerStrategy().Serialize(request)));
 			//strat.EnqueueRequest(new ProtobufnetSerializerStrategy().Serialize("hello"),
 			//	client, nameof(AuthRequest));
 
 			//strat.EnqueueRequest(null,
 			//	client, nameof(AuthRequest));
 
-			strat.EnqueueRequest(actualAuthRequest);
+			//strat.EnqueueRequest(actualAuthRequest);
 
 			Console.ReadKey();
 		}
 
 		private static void Test(IResponseMessage message, IMessageParameters parameters)
 		{
-			Console.WriteLine(((AuthResponse)message.Payload.Data).ResponseCode);
+			//Console.WriteLine(((AuthResponse)message.Payload.Data).ResponseCode);
 		}
 	}
 }
