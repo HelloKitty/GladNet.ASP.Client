@@ -13,6 +13,8 @@ using GladNet.ASP.Client.RestSharp;
 using GladNet.Message;
 using GladNet.Payload;
 using GladNet.Engine.Common;
+using GladNet.ASP.Client.RestSharp.Middleware.Authentication;
+using GladNet.Payload.Authentication;
 
 namespace GladNet.ASP.Client.Test.Manual
 {
@@ -29,10 +31,16 @@ namespace GladNet.ASP.Client.Test.Manual
 			reciever.Setup(x => x.OnNetworkMessageReceive(It.IsAny<IResponseMessage>(), It.IsAny<IMessageParameters>()))
 				.Callback<IResponseMessage, IMessageParameters>(Test);
 
-			RestSharpCurrentThreadEnqueueRequestHandlerStrategy strat = new RestSharpCurrentThreadEnqueueRequestHandlerStrategy(@"http://localhost:5000", new ProtobufnetDeserializerStrategy(), reciever.Object, 0, Mock.Of<INetworkMessageRouteBackService>());
+			RestSharpCurrentThreadEnqueueRequestHandlerStrategy strat = new RestSharpCurrentThreadEnqueueRequestHandlerStrategy(@"http://localhost:5000", new ProtobufnetDeserializerStrategy(), new ProtobufnetSerializerStrategy(), reciever.Object, 0, Mock.Of<INetworkMessageRouteBackService>());
 
+			JWTTokenServiceManager tokenServiceManager = new JWTTokenServiceManager();
+
+			strat.RegisterAuthenticationMiddlewares(new ProtobufnetSerializerStrategy(), new ProtobufnetDeserializerStrategy(), tokenServiceManager, tokenServiceManager);
 			//AuthRequest request = new AuthRequest(IPAddress.Broadcast, new LoginDetails("test", new byte[5]));
 
+			AuthenticationRequest authRequest = new AuthenticationRequest("Admin", "Test123$");
+
+			strat.EnqueueRequest(authRequest);
 
 			//PacketPayload actualAuthRequest = (new ProtobufnetDeserializerStrategy()).Deserialize<PacketPayload>((new ProtobufnetSerializerStrategy().Serialize(request)));
 			//strat.EnqueueRequest(new ProtobufnetSerializerStrategy().Serialize("hello"),
@@ -48,7 +56,7 @@ namespace GladNet.ASP.Client.Test.Manual
 
 		private static void Test(IResponseMessage message, IMessageParameters parameters)
 		{
-			//Console.WriteLine(((AuthResponse)message.Payload.Data).ResponseCode);
+			Console.WriteLine("Recieved response");
 		}
 	}
 }

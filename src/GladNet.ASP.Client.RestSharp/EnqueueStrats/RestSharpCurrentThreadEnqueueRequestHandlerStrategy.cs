@@ -59,7 +59,7 @@ namespace GladNet.ASP.Client.RestSharp
 		/// <param name="baseURL">Base string for the end-poind webserver. (Ex. www.google.com/)</param>
 		/// <param name="deserializationService">Deserialization strategy for responses.</param>
 		/// <param name="responseReciever">Message receiver service for dispatching recieved resposne messages.</param>
-		public RestSharpCurrentThreadEnqueueRequestHandlerStrategy(string baseURL, IDeserializerStrategy deserializationService, INetworkMessageReceiver responseReciever, int connectionAUID
+		public RestSharpCurrentThreadEnqueueRequestHandlerStrategy(string baseURL, IDeserializerStrategy deserializationService, ISerializerStrategy serializerStrategy, INetworkMessageReceiver responseReciever, int connectionAUID
 #if !ENDUSER
 			, INetworkMessageRouteBackService routebackService) //unfortunaly the single-threaded blocking enqueue strat needs the routeback service to function.
 #endif
@@ -73,7 +73,7 @@ namespace GladNet.ASP.Client.RestSharp
 			if (routebackService == null)
 				throw new ArgumentNullException(nameof(routebackService), $"{nameof(RestSharpCurrentThreadEnqueueRequestHandlerStrategy)} requires {(nameof(INetworkMessageRouteBackService))} as it handles responses too.");
 #endif
-
+			serializer = serializerStrategy;
 			deserializer = deserializationService;
 			responseMessageRecieverService = responseReciever;
 
