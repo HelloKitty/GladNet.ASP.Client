@@ -53,12 +53,18 @@ namespace GladNet.ASP.Client.Test.Manual
 
 			//strat.EnqueueRequest(actualAuthRequest);
 
+			Console.WriteLine($"isTokenAvailable: {tokenServiceManager.isTokenAvailable}\n\n\n\n Token: {tokenServiceManager.TokenString}\n\n\n\n TokenHeader: {tokenServiceManager.FullTokenHeaderValue}");
+
 			Console.ReadKey();
 		}
 
 		private static void Test(IResponseMessage message, IMessageParameters parameters)
 		{
 			Console.WriteLine("Recieved response");
+
+			AuthenticationResponse response = message.Payload.Data as AuthenticationResponse;
+
+			Console.WriteLine($"Successful: {response.AuthenticationSuccessful} OptionalError: {response.OptionalError} OptionErrorMessage: {response.OptionalErrorMessage}");
 		}
 	}
 }
