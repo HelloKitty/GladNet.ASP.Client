@@ -26,6 +26,6 @@ namespace GladNet.ASP.Client.RestSharp
 		/// <param name="request">The rest request.</param>
 		/// <param name="payload">The <see cref="PacketPayload"/> being sent.</param>
 		/// <returns>True if the middleware processed the request and false if there was an error.</returns>
-		void ProcessIncomingResponse(IRestResponse response, PacketPayload payload);
+		void ProcessIncomingResponse(IRestResponse response);
 	}
 }

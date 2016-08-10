@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25029.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DF79B12F-748F-42D2-8A62-6998983D1CBF}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GladNet.ASP.Client.RestSharp", "src\GladNet.ASP.Client.RestSharp\GladNet.ASP.Client.RestSharp.csproj", "{0D87530F-D7CB-46D4-A4C7-91A76AA96394}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GladNet.ASP.Client.Lib.Tests", "tests\GladNet.ASP.Client.Lib.Tests\GladNet.ASP.Client.Lib.Tests.csproj", "{C475A16C-B4D2-4C4B-A309-41670F6B3283}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GladNet.ASP.Client.RestSharp.Middleware.Authentication", "src\GladNet.ASP.Client.RestSharp.Middleware.Authentication\GladNet.ASP.Client.RestSharp.Middleware.Authentication.csproj", "{15B9B4EB-5565-4D52-B418-A51E1EDF51CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{C475A16C-B4D2-4C4B-A309-41670F6B3283}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C475A16C-B4D2-4C4B-A309-41670F6B3283}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C475A16C-B4D2-4C4B-A309-41670F6B3283}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15B9B4EB-5565-4D52-B418-A51E1EDF51CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15B9B4EB-5565-4D52-B418-A51E1EDF51CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15B9B4EB-5565-4D52-B418-A51E1EDF51CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15B9B4EB-5565-4D52-B418-A51E1EDF51CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,5 +52,6 @@ Global
 		{DE64278D-A355-4F2D-B05B-1C10EB6476F3} = {30D02440-0031-4723-BB42-ECE61813DDD4}
 		{0D87530F-D7CB-46D4-A4C7-91A76AA96394} = {DF79B12F-748F-42D2-8A62-6998983D1CBF}
 		{C475A16C-B4D2-4C4B-A309-41670F6B3283} = {30D02440-0031-4723-BB42-ECE61813DDD4}
+		{15B9B4EB-5565-4D52-B418-A51E1EDF51CC} = {DF79B12F-748F-42D2-8A62-6998983D1CBF}
 	EndGlobalSection
 EndGlobal

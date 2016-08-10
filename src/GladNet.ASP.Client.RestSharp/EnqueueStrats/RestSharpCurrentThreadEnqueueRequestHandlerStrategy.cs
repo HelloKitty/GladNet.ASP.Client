@@ -162,7 +162,7 @@ namespace GladNet.ASP.Client.RestSharp
 
 			IRestResponse response = httpClient.Post(request);
 
-			ProcessResponseMiddlewares(response, payload);
+			ProcessResponseMiddlewares(response);
 
 			//We should check the bytes returned in a response
 			//We expect a NetworkMessage (in GladNet2 to preserve routing information)
@@ -211,12 +211,12 @@ namespace GladNet.ASP.Client.RestSharp
 		/// </summary>
 		/// <param name="response">Request to process.</param>
 		/// <param name="payload">Payload to process.</param>
-		private void ProcessResponseMiddlewares(IRestResponse response, PacketPayload payload)
+		private void ProcessResponseMiddlewares(IRestResponse response)
 		{
 			//We move backwards through the middlewares to give them a chance
 			//to process the responses.
 			for (int i = restsharpMiddlewares.Count - 1; i >= 0; i--)
-				restsharpMiddlewares[i].ProcessIncomingResponse(response, payload);
+				restsharpMiddlewares[i].ProcessIncomingResponse(response);
 		}
 	}
 }
