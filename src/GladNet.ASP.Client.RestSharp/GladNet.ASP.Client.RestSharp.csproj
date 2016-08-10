@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnqueueStrats\RestSharpCurrentThreadEnqueueRequestHandlerStrategy.cs" />
+    <Compile Include="GladNetServices\DefaultWebMessageParameters.cs" />
     <Compile Include="Middleware\IMiddlewareRegistry.cs" />
     <Compile Include="Middleware\IRestSharpMiddleWare.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
