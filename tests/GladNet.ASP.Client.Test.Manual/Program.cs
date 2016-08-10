@@ -15,6 +15,7 @@ using GladNet.Payload;
 using GladNet.Engine.Common;
 using GladNet.ASP.Client.RestSharp.Middleware.Authentication;
 using GladNet.Payload.Authentication;
+using GladNet.Serializer;
 
 namespace GladNet.ASP.Client.Test.Manual
 {
@@ -22,9 +23,10 @@ namespace GladNet.ASP.Client.Test.Manual
 	{
 		static void Main(string[] args)
 		{
-			Console.ReadKey();
-
-			//client.AddHandler("application/Protobuf-Net", )
+			new ProtobufnetRegistry().RegisterAutenticationPayloads();
+			new ProtobufnetRegistry().Register(typeof(NetworkMessage));
+			new ProtobufnetRegistry().Register(typeof(RequestMessage));	
+			new ProtobufnetRegistry().Register(typeof(ResponseMessage));
 
 			Mock<INetworkMessageReceiver> reciever = new Mock<INetworkMessageReceiver>(MockBehavior.Strict);
 

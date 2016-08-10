@@ -50,7 +50,7 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 		{
 			//TODO: Add Header to JWT response.
 			//if the contenttype is not for JWT we can ignore
-			if(response.ContentType == null || response.ContentType.Contains("json"))
+			if (response.ContentType == null || !response.ContentType.Contains("json"))
 			{
 				return;
 			}
@@ -79,6 +79,9 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 				{
 					throw new Exception($"Failed to deserialize the {nameof(JWTModel)} from the JWT authorization response even on OK HTTP resonse.", e);
 				}
+
+			//WARNING: This is needed or it will mess with the bytes.
+			//response.Content = null;
 
 			//spoof the response by replacing the bytes with a response message
 			response.RawBytes = serializerStrategy.Serialize(message);	
