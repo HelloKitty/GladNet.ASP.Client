@@ -116,6 +116,10 @@
       <Project>{bf264f81-963e-498f-9c06-e480e28eb271}</Project>
       <Name>GladNet.ASP.Client.Lib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\GladNet.ASP.Client.RestSharp.Middleware.Authentication\GladNet.ASP.Client.RestSharp.Middleware.Authentication.csproj">
+      <Project>{15b9b4eb-5565-4d52-b418-a51e1edf51cc}</Project>
+      <Name>GladNet.ASP.Client.RestSharp.Middleware.Authentication</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\GladNet.ASP.Client.RestSharp\GladNet.ASP.Client.RestSharp.csproj">
       <Project>{0d87530f-d7cb-46d4-a4c7-91a76aa96394}</Project>
       <Name>GladNet.ASP.Client.RestSharp</Name>

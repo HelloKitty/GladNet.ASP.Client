@@ -79,10 +79,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\RegisterAuthenticationMiddlewareExtensions.cs" />
     <Compile Include="Middleware\JWTAuthenticationMiddleware.cs" />
     <Compile Include="Middleware\JWTAuthorizationHeaderMiddleware.cs" />
     <Compile Include="Models\JWTModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\JWTTokenServiceManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
