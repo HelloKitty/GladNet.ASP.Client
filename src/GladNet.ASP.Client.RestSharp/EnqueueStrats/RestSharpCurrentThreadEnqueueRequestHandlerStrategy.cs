@@ -9,6 +9,8 @@ using GladNet.ASP.Client.Lib;
 using GladNet.Message;
 using GladNet.Payload;
 using GladNet.Engine.Common;
+using System.Security.Cryptography.X509Certificates;
+using System.Net;
 
 namespace GladNet.ASP.Client.RestSharp
 {
@@ -78,7 +80,11 @@ namespace GladNet.ASP.Client.RestSharp
 			responseMessageRecieverService = responseReciever;
 
 			restsharpMiddlewares = new List<IRestSharpMiddleWare>(2);
-			httpClient = new RestClient(baseURL);
+
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+			System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
+
+			httpClient = new RestClient(baseURL) { Timeout = 15000 };
 
 #if !ENDUSER
 			messageRoutebackService = routebackService;
@@ -151,7 +157,7 @@ namespace GladNet.ASP.Client.RestSharp
 		{
 			//Create a new request that targets the API/RequestName controller
 			//on the ASP server.
-			RestRequest request = new RestRequest($"/api/{payloadName}", Method.POST);
+			RestRequest request = new RestRequest($"/api/{GetNameWithoutGenericArity(payloadName)}", Method.POST);
 
 			//TODO: Don't just assume serialization format
 			//sends the request with the protobuf content type header.
@@ -220,6 +226,13 @@ namespace GladNet.ASP.Client.RestSharp
 			//to process the responses.
 			for (int i = restsharpMiddlewares.Count - 1; i >= 0; i--)
 				restsharpMiddlewares[i].ProcessIncomingResponse(response);
+		}
+
+		//From: http://stackoverflow.com/questions/6386202/get-type-name-without-any-generics-info
+		public static string GetNameWithoutGenericArity(string typeName)
+		{
+			int index = typeName.IndexOf('`');
+			return index == -1 ? typeName : typeName.Substring(0, index);
 		}
 	}
 }
