@@ -25,7 +25,7 @@ namespace GladNet.ASP.Client.Test.Manual
 	{
 		static void Main(string[] args)
 		{
-			new ProtobufnetRegistry().RegisterAutenticationPayloads();
+			new ProtobufnetRegistry().RegisterAuthenticationPayloads();
 			new ProtobufnetRegistry().Register(typeof(NetworkMessage));
 			new ProtobufnetRegistry().Register(typeof(RequestMessage));	
 			new ProtobufnetRegistry().Register(typeof(ResponseMessage));
