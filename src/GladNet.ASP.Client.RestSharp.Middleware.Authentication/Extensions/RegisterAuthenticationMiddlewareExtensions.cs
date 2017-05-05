@@ -21,13 +21,30 @@ namespace GladNet.ASP.Client
 		/// <param name="serializer"></param>
 		/// <param name="deserializer"></param>
 		/// <param name="tokenRegister"></param>
-		/// <param name="tokenService"></param>
 		/// <returns>Registy to fluently chain on.</returns>
-		public static TMiddlewareRegistryType RegisterAuthenticationMiddlewares<TMiddlewareRegistryType>(this TMiddlewareRegistryType middlewarRegistry, ISerializerStrategy serializer, IDeserializerStrategy deserializer, ITokenRegistry tokenRegister, ITokenService tokenService)
+		public static TMiddlewareRegistryType RegisterAuthenticationMiddleware<TMiddlewareRegistryType>(this TMiddlewareRegistryType middlewarRegistry, ISerializerStrategy serializer, IDeserializerStrategy deserializer, ITokenRegistry tokenRegister)
 			where TMiddlewareRegistryType : IMiddlewareRegistry
 		{
 			//Register the middlewares
 			middlewarRegistry.Register(new JWTAuthenticationMiddleware(deserializer, serializer, tokenRegister));
+
+			//return for fluent chaining
+			return middlewarRegistry;
+		}
+
+		/// <summary>
+		/// Registers the Middlewares required for JWT authorization.
+		/// </summary>
+		/// <typeparam name="TMiddlewareRegistryType"></typeparam>
+		/// <param name="middlewarRegistry"></param>
+		/// <param name="serializer"></param>
+		/// <param name="deserializer"></param>
+		/// <param name="tokenService"></param>
+		/// <returns>Registy to fluently chain on.</returns>
+		public static TMiddlewareRegistryType RegisterAuthorizationMiddleware<TMiddlewareRegistryType>(this TMiddlewareRegistryType middlewarRegistry, ISerializerStrategy serializer, IDeserializerStrategy deserializer, ITokenService tokenService)
+			where TMiddlewareRegistryType : IMiddlewareRegistry
+		{
+			//Register the middlewares
 			middlewarRegistry.Register(new JWTAuthorizationHeaderMiddleware(tokenService));
 
 			//return for fluent chaining

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace GladNet.ASP.Client
 {
@@ -14,6 +15,6 @@ namespace GladNet.ASP.Client
 		/// Register the token replacing the current active token.
 		/// </summary>
 		/// <param name="tokenValue">The token value to use.</param>
-		void RegisterToken(string tokenValue);
+		void RegisterToken([NotNull] string tokenValue);
 	}
 }

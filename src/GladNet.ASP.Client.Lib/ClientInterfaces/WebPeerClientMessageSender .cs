@@ -9,6 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 using GladNet.Engine.Common;
 using GladNet.Payload;
 using GladNet.Message;
+using JetBrains.Annotations;
 
 namespace GladNet.ASP.Client.Lib
 {
@@ -56,7 +57,7 @@ namespace GladNet.ASP.Client.Lib
 			return requestEnqueueStrat.EnqueueRequest(payload);
 		}
 
-		// <summary>
+		/// <summary>
 		/// Sends a networked request.
 		/// Additionally this message/payloadtype is known to have static send parameters and those will be used in transit.
 		/// </summary>
@@ -88,10 +89,7 @@ namespace GladNet.ASP.Client.Lib
 		[SuppressMessage("Microsoft.Design", "CA1026:DefaultParametersShouldNotBeUsed")]
 		public SendResult TrySendMessage(OperationType opType, PacketPayload payload, DeliveryMethod deliveryMethod, bool encrypt = false, byte channel = 0)
 		{
-			if (CanSend(opType))
-				return SendRequest(payload, deliveryMethod, encrypt, channel);
-			else
-				return SendResult.Invalid;
+			return CanSend(opType) ? SendRequest(payload, deliveryMethod, encrypt, channel) : SendResult.Invalid;
 		}
 
 		/// <summary>
@@ -105,10 +103,7 @@ namespace GladNet.ASP.Client.Lib
 		public SendResult TrySendMessage<TPacketType>(OperationType opType, TPacketType payload) 
 			where TPacketType : PacketPayload, IStaticPayloadParameters
 		{
-			if (CanSend(opType))
-				return SendRequest(payload);
-			else
-				return SendResult.Invalid;
+			return CanSend(opType) ? SendRequest(payload) : SendResult.Invalid;
 		}
 
 		/// <summary>
@@ -121,9 +116,11 @@ namespace GladNet.ASP.Client.Lib
 			return opType == OperationType.Request;
 		}
 
-		public SendResult TryRouteMessage<TMessageType>(TMessageType message, DeliveryMethod deliveryMethod, bool encrypt = false, byte channel = 0) 
+		public SendResult TryRouteMessage<TMessageType>([NotNull] TMessageType message, DeliveryMethod deliveryMethod, bool encrypt = false, byte channel = 0) 
 			where TMessageType : INetworkMessage, IRoutableMessage, IOperationTypeMappable
 		{
+			if (message == null) throw new ArgumentNullException(nameof(message));
+
 			//TODO: Deal with additional parameters
 
 			switch (message.OperationTypeMappedValue)
@@ -133,7 +130,7 @@ namespace GladNet.ASP.Client.Lib
 				case OperationType.Event:
 				case OperationType.Response:
 				default:
-					throw new InvalidProgramException($"ASP client cannot handle message types other than {typeof(IRequestMessage).Name}.");
+					throw new InvalidProgramException($"ASP client cannot handle message types other than {nameof(IRequestMessage)}.");
 			}
 		}
 	}

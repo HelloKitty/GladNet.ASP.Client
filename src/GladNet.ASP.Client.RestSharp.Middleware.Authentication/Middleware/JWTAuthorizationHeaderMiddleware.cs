@@ -19,7 +19,7 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 
 		public JWTAuthorizationHeaderMiddleware(ITokenService service)
 		{
-			Throw<ArgumentNullException>.If.IsNull(service)?.Now(nameof(service), $"Provide {nameof(ITokenService)} must not be null.");
+			if (service == null) throw new ArgumentNullException(nameof(service));
 
 			tokenService = service;
 		}
@@ -31,6 +31,9 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 
 		public bool ProcessOutgoingRequest(IRestRequest request, PacketPayload payload)
 		{
+			if (request == null) throw new ArgumentNullException(nameof(request));
+			if (payload == null) throw new ArgumentNullException(nameof(payload));
+
 			//If the payload requires authorization to handle on the server then we should
 			//send the JWT header with the request.
 

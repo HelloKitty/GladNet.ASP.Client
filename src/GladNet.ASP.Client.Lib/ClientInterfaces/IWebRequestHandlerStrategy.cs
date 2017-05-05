@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace GladNet.ASP.Client.Lib
 {
@@ -20,13 +21,13 @@ namespace GladNet.ASP.Client.Lib
 		/// </summary>
 		/// <param name="requestPayload">Request payload.</param>
 		/// <returns>Returns the result of the enqueued request.</returns>
-		SendResult EnqueueRequest(PacketPayload requestPayload);
+		SendResult EnqueueRequest([NotNull] PacketPayload requestPayload);
 
 		/// <summary>
 		/// Enqueues a webrequest to be handled with the provided request message.
 		/// </summary>
 		/// <param name="requestMessage">Request message.</param>
 		/// <returns>Returns the result of the enqueued request.</returns>
-		SendResult EnqueueRequest(RequestMessage requestMessage);
+		SendResult EnqueueRequest([NotNull] RequestMessage requestMessage);
 	}
 }

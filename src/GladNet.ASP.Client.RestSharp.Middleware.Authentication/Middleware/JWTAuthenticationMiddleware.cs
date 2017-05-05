@@ -35,6 +35,10 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 
 		public JWTAuthenticationMiddleware(IDeserializerStrategy deserializer, ISerializerStrategy serializer, ITokenRegistry tokenRegistry)
 		{
+			if (deserializer == null) throw new ArgumentNullException(nameof(deserializer));
+			if (serializer == null) throw new ArgumentNullException(nameof(serializer));
+			if (tokenRegistry == null) throw new ArgumentNullException(nameof(tokenRegistry));
+
 			deserializerStrategy = deserializer;
 			serializerStrategy = serializer;
 			tokenRegistryService = tokenRegistry;
@@ -45,9 +49,12 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 		/// </summary>
 		/// <param name="request">The rest request.</param>
 		/// <param name="payload">The <see cref="PacketPayload"/> being sent.</param>
+		/// <param name="response"></param>
 		/// <returns>True if the middleware processed the request and false if there was an error.</returns>
 		public void ProcessIncomingResponse(IRestResponse response)
 		{
+			if (response == null) throw new ArgumentNullException(nameof(response));
+
 			//TODO: Add Header to JWT response.
 			//if the contenttype is not for JWT we can ignore
 			if (response.ContentType == null || !response.ContentType.Contains("json"))
@@ -100,6 +107,9 @@ namespace GladNet.ASP.Client.RestSharp.Middleware.Authentication
 		/// <returns>True if the middleware processed the request and false if there was an error.</returns>
 		public bool ProcessOutgoingRequest(IRestRequest request, PacketPayload payload)
 		{
+			if (request == null) throw new ArgumentNullException(nameof(request));
+			if (payload == null) throw new ArgumentNullException(nameof(payload));
+
 			AuthenticationRequest requestPayload = payload as AuthenticationRequest;
 
 			//We return true to indicate the middleware functioned correctly
