@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using GladNet.Engine.Common;
+using JetBrains.Annotations;
 
 namespace GladNet.ASP.Client.Lib
 {
@@ -28,6 +29,7 @@ namespace GladNet.ASP.Client.Lib
 		/// <summary>
 		/// Indicates the <see cref="IPAddress"/> for the remote web service/host.
 		/// </summary>
+		[NotNull]
 		public IPAddress RemoteIP { get; }
 
 		/// <summary>
@@ -37,12 +39,12 @@ namespace GladNet.ASP.Client.Lib
 		public int RemotePort { get; }
 
 		/// <summary>
-		/// 
+		/// TODO: Doc
 		/// </summary>
 		/// <param name="remoteIP"></param>
 		/// <param name="localPort"></param>
-		/// <param name="connectionID"></param>
-		public WebClientPeerDetails(string remoteIP, int localPort, int connectionID)
+		/// <param name="connectionId"></param>
+		public WebClientPeerDetails(string remoteIP, int localPort, int connectionId)
 		{
 			//TODO: Address port changes when using HTTPS
 
@@ -71,14 +73,11 @@ namespace GladNet.ASP.Client.Lib
 			LocalPort = localPort;
 
 			//Probably going to be 0 with HTTP connections
-			ConnectionID = connectionID;
+			ConnectionID = connectionId;
 
 			//http://stackoverflow.com/questions/6498829/cant-parse-domain-into-ip-in-c
 			IPAddress tempIP = null;
-			if (!IPAddress.TryParse(remoteIP, out tempIP))
-				RemoteIP = Dns.GetHostEntry(remoteIP).AddressList[0];
-			else
-				RemoteIP = tempIP;
+			RemoteIP = !IPAddress.TryParse(remoteIP, out tempIP) ? Dns.GetHostEntry(remoteIP).AddressList[0] : tempIP;
 		}
 	}
 }

@@ -121,6 +121,8 @@ namespace GladNet.ASP.Client.RestSharp
 
 		public SendResult EnqueueRequest(RequestMessage requestMessage)
 		{
+			if (requestMessage == null) throw new ArgumentNullException(nameof(requestMessage));
+
 			PacketPayload payload = requestMessage.Payload.Data; //reference to save the payload
 
 			requestMessage.Payload.Serialize(serializer); //have to serialize payload first
@@ -140,6 +142,9 @@ namespace GladNet.ASP.Client.RestSharp
 
 		public SendResult EnqueueRequest(RequestMessage requestMessage, string payloadName, PacketPayload payload)
 		{
+			if (requestMessage == null) throw new ArgumentNullException(nameof(requestMessage));
+			if (string.IsNullOrEmpty(payloadName)) throw new ArgumentException($"Failed to determine endpoint URL due to invalid or unavailable payload name.", nameof(payloadName));
+
 			requestMessage.Payload.Serialize(serializer); //have to serialize payload first
 			byte[] serializedData = serializer.Serialize(requestMessage);
 
@@ -147,14 +152,16 @@ namespace GladNet.ASP.Client.RestSharp
 			if (serializedData == null)
 				throw new InvalidOperationException($"Payload failed to serialize {requestMessage} of Type: {requestMessage?.Payload?.Data?.GetType()?.Name}.");
 
-			if (payloadName == null)
-				throw new InvalidOperationException($"Failed to determine endpoint URL due to invalid or unavailable payload name.");
-
 			return EnqueueRequest(serializedData, payloadName, payload);
 		}
 
 		public SendResult EnqueueRequest(byte[] serializedRequest, string payloadName, PacketPayload payload)
 		{
+			if (serializedRequest == null) throw new ArgumentNullException(nameof(serializedRequest));
+			if (payload == null) throw new ArgumentNullException(nameof(payload));
+			if (string.IsNullOrEmpty(payloadName)) throw new ArgumentException($"Failed to determine endpoint URL due to invalid or unavailable payload name.", nameof(payloadName));
+
+			//TODO: Cache non-generic name
 			//Create a new request that targets the API/RequestName controller
 			//on the ASP server.
 			RestRequest request = new RestRequest($"/api/{GetNameWithoutGenericArity(payloadName)}", Method.POST);
