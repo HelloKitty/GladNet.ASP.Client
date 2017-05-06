@@ -235,11 +235,13 @@ namespace GladNet.ASP.Client.RestSharp
 				restsharpMiddlewares[i].ProcessIncomingResponse(response);
 		}
 
+		private static char[] payloadNameArray { get; } = "Payload".ToArray();
+
 		//From: http://stackoverflow.com/questions/6386202/get-type-name-without-any-generics-info
 		public static string GetNameWithoutGenericArity(string typeName)
 		{
 			int index = typeName.IndexOf('`');
-			return index == -1 ? typeName : typeName.Substring(0, index);
+			return (index == -1 ? typeName : typeName.Substring(0, index)).TrimEnd(payloadNameArray);
 		}
 	}
 }
